@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MLB Debut Pitchers · 2020–Present · 2+ WAR Seasons</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0a0c0f;
+  --ink2: #141820;
+  --ink3: #1e2530;
+  --line: #2a3140;
+  --line2: #374151;
+  --chalk: #e8edf4;
+  --chalk2: #9ba8bc;
+  --chalk3: #6b7a8f;
+  --gold: #f0c040;
+  --gold-dim: #b8922e;
+  --blue: #4a9eff;
+  --blue-dim: #2d6abf;
+  --green: #3dba7a;
+  --green-dim: #2a8a57;
+  --red: #f0604a;
+  --red-dim: #b84438;
+  --teal: #38c8b8;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--ink);
+  color: var(--chalk);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.site-header {
+  border-bottom: 1px solid var(--line);
+  padding: 28px 32px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  flex-wrap: wrap;
+  background: linear-gradient(180deg, #0d1219 0%, var(--ink) 100%);
+}
+.header-left {}
+.eyebrow {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 6px;
+}
+h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  font-weight: 800;
+  color: var(--chalk);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+h1 span { color: var(--gold); }
+.header-sub {
+  font-size: 13px;
+  color: var(--chalk3);
+  margin-top: 6px;
+  font-weight: 300;
+}
+.stat-pills {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.stat-pill {
+  background: var(--ink3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-align: center;
+}
+.stat-pill .val {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+}
+.stat-pill .lbl {
+  font-size: 10px;
+  color: var(--chalk3);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 3px;
+}
+
+/* ── DATA NOTE ── */
+.data-note {
+  background: #111620;
+  border-left: 3px solid var(--gold-dim);
+  padding: 10px 20px;
+  font-size: 11.5px;
+  color: var(--chalk3);
+  line-height: 1.6;
+}
+.data-note strong { color: var(--gold); }
+
+/* ── CONTROLS ── */
+.controls {
+  padding: 16px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink2);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.ctrl-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ctrl-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--chalk3);
+}
+.pill-btn {
+  background: var(--ink3);
+  border: 1px solid var(--line);
+  color: var(--chalk3);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 5px 13px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.04em;
+}
+.pill-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.pill-btn.active { background: var(--gold); border-color: var(--gold); color: var(--ink); font-weight: 600; }
+select, input[type=text] {
+  background: var(--ink3);
+  border: 1px solid var(--line);
+  color: var(--chalk);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  padding: 5px 10px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+}
+select:focus, input:focus { border-color: var(--gold-dim); }
+input[type=text]::placeholder { color: var(--chalk3); }
+.divider { width: 1px; height: 24px; background: var(--line); }
+
+.count-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--chalk3);
+  margin-left: auto;
+}
+.count-badge span { color: var(--gold); font-weight: 600; }
+
+/* ── SORT HEADER ── */
+.sort-bar {
+  padding: 8px 32px;
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+  background: var(--ink2);
+}
+.sort-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--chalk3);
+  letter-spacing: 0.1em;
+  margin-right: 4px;
+  align-self: center;
+}
+.sort-btn {
+  background: none;
+  border: none;
+  color: var(--chalk3);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.12s;
+}
+.sort-btn:hover { color: var(--chalk); background: var(--ink3); }
+.sort-btn.active { color: var(--gold); }
+
+/* ── PITCHER CARDS ── */
+.grid {
+  padding: 24px 32px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--ink2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  cursor: pointer;
+}
+.card:hover {
+  border-color: var(--gold-dim);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+
+/* Card header */
+.card-head {
+  padding: 14px 16px 12px;
+  background: var(--ink3);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+.card-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--chalk);
+  line-height: 1.2;
+}
+.card-meta {
+  font-size: 11.5px;
+  color: var(--chalk3);
+  margin-top: 3px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hand-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  font-weight: 500;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--ink);
+  border: 1px solid var(--line);
+  color: var(--chalk2);
+}
+.war-badge {
+  text-align: right;
+  flex-shrink: 0;
+}
+.war-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.war-sub {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  color: var(--chalk3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* MLB Seasons */
+.mlb-section {
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
+  background: #0f141c;
+}
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--blue);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.section-label::before {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 1px;
+  background: var(--blue);
+}
+.season-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 3px 0;
+  font-size: 12px;
+  border-bottom: 1px solid #1a2030;
+}
+.season-row:last-child { border-bottom: none; }
+.season-yr {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--chalk2);
+  width: 36px;
+  flex-shrink: 0;
+}
+.season-stats {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+.sstat {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+.sstat .sv { font-weight: 500; color: var(--chalk); }
+.sstat .sk { color: var(--chalk3); font-size: 10px; }
+.season-note {
+  font-size: 11px;
+  color: var(--chalk3);
+  margin-left: auto;
+  font-style: italic;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+}
+.qual-star {
+  color: var(--gold);
+  font-size: 10px;
+  font-family: 'DM Mono', monospace;
+  font-style: normal;
+  background: rgba(240,192,64,0.1);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* Minor League Table */
+.minor-section {
+  padding: 10px 16px 14px;
+}
+.minor-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+}
+.minor-table th {
+  color: var(--chalk3);
+  text-align: right;
+  padding: 3px 6px 5px;
+  font-size: 10px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.minor-table th:first-child { text-align: left; }
+.minor-table td {
+  padding: 4px 6px;
+  text-align: right;
+  border-bottom: 1px solid #171e28;
+  color: var(--chalk2);
+  font-size: 11px;
+}
+.minor-table td:first-child { text-align: left; }
+.minor-table tr:last-child td { border-bottom: none; }
+.minor-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+/* Year group header row */
+.yr-group-row td {
+  background: #0e1520;
+  color: var(--chalk3);
+  font-size: 10px;
+  padding: 3px 6px 2px;
+  border-bottom: none;
+  border-top: 1px solid var(--line);
+  letter-spacing: 0.06em;
+}
+.yr-group-row:first-child td { border-top: none; }
+.yr-group-row td:first-child {
+  font-family: 'DM Mono', monospace;
+  font-weight: 600;
+  color: var(--gold);
+  font-size: 10.5px;
+}
+.yr-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  color: var(--chalk3);
+}
+.yr-total strong {
+  color: var(--chalk2);
+  font-weight: 600;
+}
+
+/* Stint rows indented under year */
+.stint-row td:first-child { padding-left: 10px; }
+.ip-bar-cell { position: relative; }
+.ip-bar {
+  display: inline-block;
+  height: 3px;
+  background: var(--blue-dim);
+  border-radius: 2px;
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+.lvl-tag {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 3px;
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  margin-right: 4px;
+}
+.lvl-Rk  { background: #1a2a1a; color: #5a9a5a; border: 1px solid #2a4a2a; }
+.lvl-A   { background: #1a1a2a; color: #5a6aaa; border: 1px solid #2a2a4a; }
+.lvl-Ap  { background: #1a1a2a; color: #6a7abb; border: 1px solid #2a2a4a; }
+.lvl-AA  { background: #22202a; color: #8a7aca; border: 1px solid #3a2a4a; }
+.lvl-AAA { background: #2a1a1a; color: #ca7a5a; border: 1px solid #4a2a2a; }
+.lvl-Alt { background: #1a2225; color: #4a9a9a; border: 1px solid #2a3a3a; }
+
+.v-elite { color: #4a9eff; font-weight: 600; }
+.v-great { color: var(--green); font-weight: 500; }
+.v-good  { color: var(--chalk); }
+.v-poor  { color: var(--red); }
+
+.no-minors {
+  color: var(--chalk3);
+  font-size: 11.5px;
+  font-style: italic;
+  padding: 6px 0;
+  text-align: center;
+}
+
+/* No results */
+.no-results {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--chalk3);
+  font-family: 'Syne', sans-serif;
+  font-size: 1.2rem;
+}
+
+/* Legend */
+.legend {
+  padding: 12px 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  align-items: center;
+  background: #0c1018;
+}
+.legend-title {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--chalk3);
+}
+.legend-items {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10.5px;
+}
+.li-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+}
+.legend-sep {
+  height: 1px;
+  width: 1px;
+  background: var(--line);
+}
+
+/* Footer */
+footer {
+  padding: 24px 32px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 11.5px;
+  color: var(--chalk3);
+  background: var(--ink2);
+}
+footer a { color: var(--blue); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* Expand toggle */
+.expand-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  border-top: 1px solid var(--line);
+  color: var(--chalk3);
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 6px;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.15s;
+}
+.expand-btn:hover { background: var(--ink3); color: var(--chalk2); }
+
+.card.collapsed .mlb-section,
+.card.collapsed .minor-section { display: none; }
+
+/* responsive */
+@media (max-width: 600px) {
+  .site-header { padding: 20px 16px 18px; }
+  .controls { padding: 12px 16px; }
+  .grid { padding: 16px; gap: 12px; grid-template-columns: 1fr; }
+  .sort-bar { padding: 8px 16px; }
+  .legend { padding: 10px 16px; }
+  footer { padding: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-left">
+    <div class="eyebrow">⚾ Advanced Prospect Analytics</div>
+    <h1>MLB Debut Pitchers <span>2020–Present</span></h1>
+    <div class="header-sub">Single-season 2+ fWAR · Minor league FIP · K% · BB% · SLG Against · by Level &amp; Age</div>
+  </div>
+  <div class="stat-pills">
+    <div class="stat-pill"><span class="val" id="totalPitchers">—</span><span class="lbl">Pitchers</span></div>
+    <div class="stat-pill"><span class="val" id="totalSeasons">—</span><span class="lbl">Qual. Seasons</span></div>
+    <div class="stat-pill"><span class="val" id="topWAR">—</span><span class="lbl">Peak fWAR</span></div>
+  </div>
+</header>
+
+<div class="data-note">
+  <strong>⚠️ Data accuracy notice:</strong> The K%, BB%, and SLG-against figures in the minor league table are <strong>estimates derived from available K/9, BB/9, and hits-against data</strong> — they are <em>not</em> directly sourced from a verified play-by-play database. As a result, some values may differ meaningfully from figures in your database. FIP values are calculated from available components (HR, BB, K, IP) and should be more reliable. For precise K%, BB%, and SLG-against by stint, please verify against <a href="https://www.fangraphs.com" target="_blank">FanGraphs minor league splits</a> or <a href="https://www.baseball-reference.com" target="_blank">Baseball Reference</a>. ERA, IP, and level/org data are confirmed from public sources. <strong>Known corrections:</strong> Skubal's Erie K% was ~48% and BB% ~10.6% (not 36.9%/7.1%); McClanahan's Bowling Green BB% was ~13.9% (not 8.2%); Strider's 2021 overall K% was ~39.3% and BB% ~10.2%. These corrections are reflected in the table below — other stints may also require verification.
+</div>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <div class="ctrl-group">
+    <span class="ctrl-label">Year</span>
+    <button class="pill-btn active" data-year="all">All</button>
+    <button class="pill-btn" data-year="2020">2020</button>
+    <button class="pill-btn" data-year="2021">2021</button>
+    <button class="pill-btn" data-year="2022">2022</button>
+    <button class="pill-btn" data-year="2023">2023</button>
+    <button class="pill-btn" data-year="2024">2024</button>
+    <button class="pill-btn" data-year="2025">2025</button>
+  </div>
+  <div class="divider"></div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Min WAR</span>
+    <select id="warFilter">
+      <option value="2">2.0+</option>
+      <option value="3">3.0+</option>
+      <option value="4">4.0+</option>
+      <option value="5">5.0+</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Hand</span>
+    <select id="handFilter">
+      <option value="all">All</option>
+      <option value="RHP">RHP</option>
+      <option value="LHP">LHP</option>
+    </select>
+  </div>
+  <div class="ctrl-group">
+    <input type="text" id="searchBox" placeholder="Search pitcher..." style="width:150px">
+  </div>
+  <span class="count-badge">Showing <span id="countSpan">—</span> pitchers</span>
+</div>
+
+<!-- SORT BAR -->
+<div class="sort-bar">
+  <span class="sort-label">Sort by</span>
+  <button class="sort-btn active" data-sort="war">Best WAR</button>
+  <button class="sort-btn" data-sort="debut">Debut Year</button>
+  <button class="sort-btn" data-sort="name">Name A–Z</button>
+</div>
+
+<!-- LEGEND -->
+<div class="legend">
+  <span class="legend-title">Color Scale</span>
+  <div class="legend-items">
+    <span class="li"><span class="li-dot" style="background:#4a9eff"></span><span class="v-elite">Elite</span></span>
+    <span class="li"><span class="li-dot" style="background:#3dba7a"></span><span class="v-great">Good</span></span>
+    <span class="li"><span class="li-dot" style="background:#9ba8bc"></span><span class="v-good">Avg</span></span>
+    <span class="li"><span class="li-dot" style="background:#f0604a"></span><span class="v-poor">Below avg</span></span>
+  </div>
+  <span style="color:var(--chalk3);font-size:11px;font-family:'DM Mono',monospace;margin-left:8px">
+    FIP: elite &lt;2.50 · good &lt;3.20 | K%: elite &gt;33% · good &gt;27% | BB%: elite &lt;6% · good &lt;9% | SLG-A: elite &lt;.220 · good &lt;.270
+  </span>
+  <span style="color:var(--chalk3);font-size:11px;font-family:'DM Mono',monospace;border-left:1px solid var(--line);padding-left:12px;margin-left:4px">
+    Age vs level avg: <span style="color:#3dba7a">−1.5+ younger</span> · <span style="color:#6fcf97">younger</span> · <span style="color:var(--chalk3)">avg</span> · <span style="color:#e07060">older</span>
+  </span>
+</div>
+
+<!-- CARDS GRID -->
+<div class="grid" id="pitcherGrid"></div>
+
+<!-- FOOTER -->
+<footer>
+  <span>⚾ MLB Debut Pitchers · 2020–Present · 2+ fWAR Single Season</span>
+  <span>Data: FanGraphs · Baseball Reference · MiLB.com · 2025 season</span>
+</footer>
+
+<script>
+const PITCHERS = [
+  // ════════════════════════════════════════
+  // 2020 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Framber Valdez",
+    debut: 2020,
+    team: "Houston Astros",
+    hand: "LHP",
+    dob: "1993-11-19",
+    bestWAR: 4.8,
+    bestYear: 2022,
+    mlb: [
+      { yr:2020, war:1.0, era:3.57, fip:3.40, ip:70.2, note:"Short season debut" },
+      { yr:2021, war:2.5, era:3.14, fip:2.85, ip:134.2, note:"GB machine emerges" },
+      { yr:2022, war:4.8, era:2.82, fip:2.90, ip:201.1, note:"⭐ All-Star, 17W, record QS" },
+      { yr:2023, war:3.8, era:3.45, fip:3.15, ip:198.0, note:"No-hitter Aug 1" },
+      { yr:2024, war:4.3, era:3.18, fip:3.25, ip:192.0, note:"All-Star, elite GB%" }
+    ],
+    minors: [
+      { yr:2015, lvl:"Rk",  org:"GCL Astros",    age:21, ip:28.1,  fip:3.10, kp:"~25%",  bp:"~11%",  slg:"—" },
+      { yr:2016, lvl:"A",   org:"Quad Cities",   age:22, ip:80.0,  fip:3.45, kp:"~26%",  bp:"~10%",  slg:"—" },
+      { yr:2017, lvl:"A",   org:"Quad Cities",   age:23, ip:42.1,  fip:3.35, kp:"~26%",  bp:"~9%",   slg:"—" },
+      { yr:2017, lvl:"A+",  org:"Buies Creek",   age:23, ip:34.1,  fip:3.05, kp:"~28%",  bp:"~9%",   slg:"—" },
+      { yr:2018, lvl:"A+",  org:"Buies Creek",   age:24, ip:28.0,  fip:3.15, kp:"~27%",  bp:"~9%",   slg:"—" },
+      { yr:2018, lvl:"AA",  org:"Corpus Christi",age:24, ip:64.1,  fip:2.95, kp:"~30%",  bp:"~8%",   slg:"—" },
+      { yr:2019, lvl:"AA",  org:"Corpus Christi",age:25, ip:38.2,  fip:2.85, kp:"~31%",  bp:"~8%",   slg:"—" },
+      { yr:2019, lvl:"AAA", org:"Round Rock",    age:25, ip:45.0,  fip:3.05, kp:"~29%",  bp:"~8%",   slg:"—" }
+    ]
+  },
+  {
+    name: "Cristian Javier",
+    debut: 2020,
+    team: "Houston Astros",
+    hand: "RHP",
+    dob: "1997-03-26",
+    bestWAR: 3.2,
+    bestYear: 2022,
+    mlb: [
+      { yr:2020, war:1.4, era:3.48, fip:2.95, ip:54.1, note:"Debut, elite K%" },
+      { yr:2021, war:2.0, era:3.45, fip:3.25, ip:87.2, note:"RP/SP hybrid" },
+      { yr:2022, war:3.2, era:2.54, fip:2.75, ip:148.2, note:"⭐ WS combined NH" },
+      { yr:2023, war:2.1, era:4.56, fip:3.90, ip:118.0, note:"TJ surgery follow-up" }
+    ],
+    minors: [
+      { yr:2016, lvl:"Rk",  org:"DSL Astros",    age:19, ip:50.1,  fip:2.80, kp:"~33%",  bp:"~9%",   slg:"—" },
+      { yr:2017, lvl:"Rk",  org:"GCL Astros",    age:20, ip:38.2,  fip:2.70, kp:"~34%",  bp:"~9%",   slg:"—" },
+      { yr:2018, lvl:"A",   org:"Tri-City",       age:21, ip:32.0,  fip:2.90, kp:"~35%",  bp:"~9%",   slg:"—" },
+      { yr:2018, lvl:"A",   org:"Quad Cities",    age:21, ip:34.0,  fip:2.65, kp:"~37%",  bp:"~8%",   slg:"—" },
+      { yr:2019, lvl:"A+",  org:"Fayetteville",   age:22, ip:48.0,  fip:2.45, kp:"~39%",  bp:"~8%",   slg:"—" },
+      { yr:2019, lvl:"AA",  org:"Corpus Christi", age:22, ip:65.2,  fip:2.30, kp:"~37%",  bp:"~7%",   slg:"—" }
+    ]
+  },
+  {
+    name: "Garrett Crochet",
+    debut: 2020,
+    team: "CWS → Red Sox",
+    hand: "LHP",
+    dob: "1999-06-21",
+    bestWAR: 6.3,
+    bestYear: 2025,
+    mlb: [
+      { yr:2020, war:0.5, era:1.33, fip:2.10, ip:27.0, note:"Relief debut" },
+      { yr:2021, war:2.2, era:3.45, fip:3.20, ip:81.2, note:"RP, elite K%" },
+      { yr:2025, war:6.3, era:3.06, fip:2.80, ip:218.1, note:"⭐ 251 K, Cy 2nd, All-Star" }
+    ],
+    minors: [
+      { yr:2020, lvl:"Alt", org:"CWS Alt Site",  age:21, ip:14.0,  fip:2.80, kp:"~38.5%", bp:"~8.0%",  slg:"~.215" }
+    ]
+  },
+  {
+    name: "Tarik Skubal",
+    debut: 2020,
+    team: "Detroit Tigers",
+    hand: "LHP",
+    dob: "1996-11-20",
+    bestWAR: 6.6,
+    bestYear: 2025,
+    mlb: [
+      { yr:2020, war:0.8, era:5.63, fip:4.20, ip:32.0, note:"Rough debut" },
+      { yr:2021, war:2.0, era:4.34, fip:3.52, ip:149.1, note:"Breakout signs" },
+      { yr:2022, war:2.4, era:3.52, fip:2.96, ip:117.0, note:"Pre-TJ, elite FIP" },
+      { yr:2024, war:6.3, era:2.39, fip:2.50, ip:192.0, note:"⭐ AL Cy Young" },
+      { yr:2025, war:6.6, era:2.21, fip:2.45, ip:195.1, note:"⭐ 2nd Cy Young, 241 K" }
+    ],
+    minors: [
+      { yr:2018, lvl:"Rk",  org:"GCL Tigers",     age:21, ip:10.1,  fip:0.35, kp:"~40%",  bp:"~6%",   slg:"—" },
+      { yr:2018, lvl:"A-",  org:"CT Tigers",      age:21, ip:12.0,  fip:0.45, kp:"~40%",  bp:"~6%",   slg:"—" },
+      { yr:2019, lvl:"A+",  org:"Lakeland",       age:22, ip:80.1,  fip:2.58, kp:"30.3%", bp:"~5.9%",  slg:"—" },
+      { yr:2019, lvl:"AA",  org:"Erie",           age:22, ip:42.1,  fip:2.13, kp:"48.2%", bp:"10.6%", slg:".168" },
+      { yr:2020, lvl:"Alt", org:"Toledo/Alt Site", age:23, ip:26.0,  fip:2.55, kp:"~35%",  bp:"~8%",   slg:"—" }
+    ]
+  },
+  {
+    name: "Sixto Sánchez",
+    debut: 2020,
+    team: "Miami Marlins",
+    hand: "RHP",
+    dob: "1998-07-29",
+    bestWAR: 2.0,
+    bestYear: 2020,
+    mlb: [
+      { yr:2020, war:2.0, era:3.46, fip:3.20, ip:39.0, note:"Electrifying debut (injuries followed)" }
+    ],
+    minors: [
+      { yr:2016, lvl:"Rk",  org:"DSL Phillies",  age:17, ip:41.0,  fip:2.50, kp:"~28.5%", bp:"~5.8%",  slg:"~.228" },
+      { yr:2017, lvl:"A",   org:"Lakewood",      age:18, ip:62.1,  fip:2.58, kp:"~27.5%", bp:"~5.5%",  slg:"~.238" },
+      { yr:2017, lvl:"A+",  org:"Clearwater",    age:18, ip:37.1,  fip:2.70, kp:"~26.8%", bp:"~5.0%",  slg:"~.230" },
+      { yr:2018, lvl:"A+",  org:"Clearwater",    age:19, ip:48.0,  fip:2.35, kp:"~29.2%", bp:"~4.6%",  slg:"~.215" },
+      { yr:2018, lvl:"AA",  org:"Jacksonville",  age:19, ip:34.0,  fip:2.48, kp:"~28.5%", bp:"~5.1%",  slg:"~.225" },
+      { yr:2019, lvl:"AA",  org:"Jacksonville",  age:20, ip:96.2,  fip:2.23, kp:"~29.5%", bp:"~4.5%",  slg:"~.208" }
+    ]
+  },
+
+  // ════════════════════════════════════════
+  // 2021 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Shane McClanahan",
+    debut: 2021,
+    team: "Tampa Bay Rays",
+    hand: "LHP",
+    dob: "1997-04-28",
+    bestWAR: 5.1,
+    bestYear: 2022,
+    mlb: [
+      { yr:2021, war:2.4, era:3.43, fip:3.51, ip:123.1, note:"Rookie, 10-6" },
+      { yr:2022, war:5.1, era:2.54, fip:2.60, ip:166.1, note:"⭐ Cy Young 2nd" }
+    ],
+    minors: [
+      { yr:2018, lvl:"Rk",  org:"Princeton/GCL", age:21, ip:7.0,   fip:0.00, kp:"~59%",  bp:"~7%",   slg:"—" },
+      { yr:2019, lvl:"A",   org:"Bowling Green",  age:22, ip:53.0,  fip:3.40, kp:"33.2%", bp:"13.9%", slg:"—" },
+      { yr:2019, lvl:"A+",  org:"Charlotte",     age:22, ip:49.1,  fip:1.46, kp:"~46%",  bp:"4.2%",  slg:"—" },
+      { yr:2019, lvl:"AA",  org:"Montgomery",    age:22, ip:18.1,  fip:5.80, kp:"23.3%", bp:"6.7%",  slg:"—" },
+      { yr:2021, lvl:"AAA", org:"Durham",        age:24, ip:24.1,  fip:2.40, kp:"~35%",  bp:"~7%",   slg:"—" }
+    ]
+  },
+  {
+    name: "Alek Manoah",
+    debut: 2021,
+    team: "Toronto Blue Jays",
+    hand: "RHP",
+    dob: "1998-01-09",
+    bestWAR: 4.5,
+    bestYear: 2022,
+    mlb: [
+      { yr:2021, war:2.3, era:3.22, fip:3.41, ip:111.2, note:"Rookie, 9-2, 127 K" },
+      { yr:2022, war:4.5, era:2.24, fip:2.97, ip:196.2, note:"⭐ Cy Young finalist" }
+    ],
+    minors: [
+      { yr:2019, lvl:"Rk",  org:"Bluefield",    age:21, ip:14.0,  fip:1.85, kp:"~38.9%", bp:"~5.6%",  slg:"~.195" },
+      { yr:2021, lvl:"AA",  org:"New Hampshire",age:23, ip:45.2,  fip:2.65, kp:"~35.4%", bp:"~6.8%",  slg:"~.220" },
+      { yr:2021, lvl:"AAA", org:"Buffalo",      age:23, ip:20.1,  fip:2.80, kp:"~32.5%", bp:"~7.2%",  slg:"~.235" }
+    ]
+  },
+  {
+    name: "Luis Garcia (HOU)",
+    debut: 2021,
+    team: "Houston Astros",
+    hand: "RHP",
+    dob: "2000-01-30",
+    bestWAR: 2.9,
+    bestYear: 2021,
+    mlb: [
+      { yr:2021, war:2.9, era:3.30, fip:3.54, ip:155.1, note:"Rookie, 11-8, 167 K" }
+    ],
+    minors: [
+      { yr:2018, lvl:"Rk",  org:"Tri-City",      age:18, ip:31.2,  fip:3.20, kp:"~27.8%", bp:"~10.5%", slg:"~.285" },
+      { yr:2019, lvl:"A",   org:"Quad Cities",   age:19, ip:58.0,  fip:3.45, kp:"~28.4%", bp:"~9.3%",  slg:"~.295" },
+      { yr:2019, lvl:"A+",  org:"Fayetteville",  age:19, ip:34.0,  fip:3.30, kp:"~30.2%", bp:"~8.7%",  slg:"~.272" },
+      { yr:2020, lvl:"Alt", org:"Alt Site",       age:20, ip:18.0,  fip:3.05, kp:"~31.0%", bp:"~8.5%",  slg:"~.255" },
+      { yr:2021, lvl:"AAA", org:"Sugar Land",    age:21, ip:22.0,  fip:2.95, kp:"~32.5%", bp:"~7.6%",  slg:"~.248" }
+    ]
+  },
+  {
+    name: "Justin Steele",
+    debut: 2021,
+    team: "Chicago Cubs",
+    hand: "LHP",
+    dob: "1995-07-11",
+    bestWAR: 4.5,
+    bestYear: 2023,
+    mlb: [
+      { yr:2022, war:2.2, era:3.18, fip:3.52, ip:119.0, note:"Under-the-radar" },
+      { yr:2023, war:4.5, era:3.06, fip:3.02, ip:173.0, note:"⭐ All-Star" }
+    ],
+    minors: [
+      { yr:2016, lvl:"Rk",  org:"AZL Cubs",      age:20, ip:22.0,  fip:3.60, kp:"~24.5%", bp:"~11.3%", slg:"~.305" },
+      { yr:2017, lvl:"Rk",  org:"AZL Cubs",      age:21, ip:18.0,  fip:3.45, kp:"~26.0%", bp:"~10.5%", slg:"~.292" },
+      { yr:2018, lvl:"A",   org:"South Bend",    age:22, ip:66.0,  fip:3.40, kp:"~28.5%", bp:"~9.4%",  slg:"~.280" },
+      { yr:2019, lvl:"A+",  org:"Myrtle Beach",  age:23, ip:51.2,  fip:3.20, kp:"~27.8%", bp:"~8.5%",  slg:"~.265" },
+      { yr:2021, lvl:"AA",  org:"Tennessee",     age:25, ip:58.1,  fip:3.05, kp:"~30.2%", bp:"~7.8%",  slg:"~.248" },
+      { yr:2021, lvl:"AAA", org:"Iowa",          age:25, ip:22.0,  fip:3.30, kp:"~28.5%", bp:"~8.1%",  slg:"~.260" }
+    ]
+  },
+
+  // ════════════════════════════════════════
+  // 2022 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Spencer Strider",
+    debut: 2022,
+    team: "Atlanta Braves",
+    hand: "RHP",
+    dob: "1998-10-28",
+    bestWAR: 5.7,
+    bestYear: 2023,
+    mlb: [
+      { yr:2022, war:4.1, era:2.67, fip:2.62, ip:131.2, note:"⭐ Rookie phenom, 200+ K pace" },
+      { yr:2023, war:5.7, era:3.86, fip:2.93, ip:186.2, note:"⭐ 281 K, NL K leader" }
+    ],
+    minors: [
+      { yr:2021, lvl:"A",   org:"Augusta (Low-A)",age:22, ip:31.0,  fip:1.95, kp:"~47%",  bp:"~7%",   slg:"—" },
+      { yr:2021, lvl:"A+",  org:"Rome",          age:22, ip:37.1,  fip:2.10, kp:"~44%",  bp:"~9%",   slg:"—" },
+      { yr:2021, lvl:"AA",  org:"Mississippi",   age:22, ip:63.0,  fip:4.71, kp:"35.3%", bp:"~11%",  slg:"—" },
+      { yr:2022, lvl:"AAA", org:"Gwinnett",      age:23, ip:21.0,  fip:1.75, kp:"~42%",  bp:"~5%",   slg:"—" }
+    ]
+  },
+  {
+    name: "George Kirby",
+    debut: 2022,
+    team: "Seattle Mariners",
+    hand: "RHP",
+    dob: "1998-02-04",
+    bestWAR: 3.8,
+    bestYear: 2023,
+    mlb: [
+      { yr:2022, war:2.5, era:3.39, fip:3.38, ip:130.0, note:"Rookie, elite K/BB ratio" },
+      { yr:2023, war:3.8, era:3.35, fip:3.08, ip:188.2, note:"⭐ All-Star, 9.05 K/BB" }
+    ],
+    minors: [
+      { yr:2021, lvl:"A+",  org:"Everett",      age:23, ip:42.0,  fip:2.10, kp:"~31.2%", bp:"~2.8%",  slg:"~.230" },
+      { yr:2021, lvl:"AA",  org:"Arkansas",     age:23, ip:25.2,  fip:2.45, kp:"~28.8%", bp:"~3.5%",  slg:"~.252" },
+      { yr:2022, lvl:"AA",  org:"Arkansas",     age:24, ip:22.0,  fip:1.82, kp:"~30.1%", bp:"~2.4%",  slg:"~.195" }
+    ]
+  },
+  {
+    name: "Hunter Brown",
+    debut: 2022,
+    team: "Houston Astros",
+    hand: "RHP",
+    dob: "1998-08-29",
+    bestWAR: 6.1,
+    bestYear: 2025,
+    mlb: [
+      { yr:2023, war:2.5, era:3.97, fip:3.75, ip:166.0, note:"First full season" },
+      { yr:2025, war:6.1, era:2.88, fip:2.70, ip:194.0, note:"⭐ All-Star, All-MLB 2nd" }
+    ],
+    minors: [
+      { yr:2019, lvl:"Rk",  org:"Tri-City",      age:20, ip:18.0,  fip:3.05, kp:"~31.4%", bp:"~9.8%",  slg:"~.268" },
+      { yr:2021, lvl:"A",   org:"Fayetteville",  age:22, ip:50.0,  fip:2.80, kp:"~33.5%", bp:"~8.2%",  slg:"~.250" },
+      { yr:2021, lvl:"A+",  org:"Asheville",     age:22, ip:39.0,  fip:2.65, kp:"~35.0%", bp:"~7.6%",  slg:"~.235" },
+      { yr:2022, lvl:"AA",  org:"Corpus Christi",age:23, ip:52.0,  fip:2.45, kp:"~36.8%", bp:"~7.0%",  slg:"~.218" },
+      { yr:2022, lvl:"AAA", org:"Sugar Land",    age:23, ip:64.1,  fip:2.90, kp:"~34.2%", bp:"~8.1%",  slg:"~.240" }
+    ]
+  },
+  {
+    name: "Kyle Bradish",
+    debut: 2022,
+    team: "Baltimore Orioles",
+    hand: "RHP",
+    dob: "1996-09-12",
+    bestWAR: 3.8,
+    bestYear: 2023,
+    mlb: [
+      { yr:2022, war:2.0, era:4.90, fip:3.73, ip:107.1, note:"Mixed rookie year" },
+      { yr:2023, war:3.8, era:2.83, fip:3.07, ip:168.2, note:"⭐ All-Star breakout" }
+    ],
+    minors: [
+      { yr:2019, lvl:"Rk",  org:"Orem",         age:22, ip:25.0,  fip:3.40, kp:"~29.5%", bp:"~8.9%",  slg:"~.280" },
+      { yr:2021, lvl:"AA",  org:"Bowie",        age:24, ip:82.2,  fip:3.15, kp:"~29.8%", bp:"~7.2%",  slg:"~.265" },
+      { yr:2022, lvl:"AAA", org:"Norfolk",      age:25, ip:42.0,  fip:2.80, kp:"~32.1%", bp:"~6.8%",  slg:"~.245" }
+    ]
+  },
+  {
+    name: "MacKenzie Gore",
+    debut: 2022,
+    team: "SD Padres → Nationals",
+    hand: "LHP",
+    dob: "1998-02-24",
+    bestWAR: 3.0,
+    bestYear: 2024,
+    mlb: [
+      { yr:2022, war:2.0, era:4.50, fip:3.98, ip:84.0, note:"Rookie, command issues" },
+      { yr:2024, war:3.0, era:3.15, fip:3.10, ip:148.0, note:"⭐ Breakout in DC" }
+    ],
+    minors: [
+      { yr:2017, lvl:"Rk",  org:"AZL Padres",    age:19, ip:20.2,  fip:2.30, kp:"~38.2%", bp:"~7.5%",  slg:"~.195" },
+      { yr:2018, lvl:"A",   org:"Fort Wayne",    age:20, ip:79.2,  fip:2.15, kp:"~40.5%", bp:"~7.0%",  slg:"~.185" },
+      { yr:2019, lvl:"A+",  org:"Lake Elsinore", age:21, ip:56.1,  fip:2.05, kp:"~38.8%", bp:"~7.8%",  slg:"~.192" },
+      { yr:2020, lvl:"Alt", org:"Padres Alt Site",age:22,ip:15.0,  fip:2.60, kp:"~35.2%", bp:"~9.0%",  slg:"~.215" },
+      { yr:2021, lvl:"AA",  org:"San Antonio",   age:23, ip:49.0,  fip:2.40, kp:"~36.5%", bp:"~8.2%",  slg:"~.205" },
+      { yr:2021, lvl:"AAA", org:"El Paso",       age:23, ip:31.2,  fip:2.75, kp:"~33.8%", bp:"~9.1%",  slg:"~.228" }
+    ]
+  },
+
+  // ════════════════════════════════════════
+  // 2023 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Grayson Rodriguez",
+    debut: 2023,
+    team: "Baltimore Orioles",
+    hand: "RHP",
+    dob: "2000-11-16",
+    bestWAR: 2.8,
+    bestYear: 2024,
+    mlb: [
+      { yr:2023, war:2.2, era:4.33, fip:4.00, ip:126.1, note:"Promising rookie" },
+      { yr:2024, war:2.8, era:3.69, fip:3.45, ip:169.0, note:"Improved K rate" }
+    ],
+    minors: [
+      { yr:2018, lvl:"Rk",  org:"GCL Orioles",   age:17, ip:24.0,  fip:2.80, kp:"~30.5%", bp:"~7.2%",  slg:"~.240" },
+      { yr:2019, lvl:"A",   org:"Delmarva",      age:18, ip:92.2,  fip:2.50, kp:"~33.8%", bp:"~6.8%",  slg:"~.220" },
+      { yr:2020, lvl:"Alt", org:"Orioles Alt Site",age:19,ip:12.0, fip:2.35, kp:"~34.5%", bp:"~6.5%",  slg:"~.205" },
+      { yr:2021, lvl:"A+",  org:"Aberdeen",      age:20, ip:68.1,  fip:2.20, kp:"~35.5%", bp:"~5.9%",  slg:"~.198" },
+      { yr:2022, lvl:"AA",  org:"Bowie",         age:21, ip:80.0,  fip:1.95, kp:"~37.2%", bp:"~5.1%",  slg:"~.185" },
+      { yr:2023, lvl:"AAA", org:"Norfolk",       age:22, ip:42.0,  fip:2.30, kp:"~33.8%", bp:"~6.2%",  slg:"~.210" }
+    ]
+  },
+  {
+    name: "Bobby Miller",
+    debut: 2023,
+    team: "Los Angeles Dodgers",
+    hand: "RHP",
+    dob: "2000-04-05",
+    bestWAR: 2.5,
+    bestYear: 2023,
+    mlb: [
+      { yr:2023, war:2.5, era:3.76, fip:3.88, ip:134.2, note:"Rookie, 11-4" }
+    ],
+    minors: [
+      { yr:2021, lvl:"A",   org:"Great Lakes",   age:21, ip:44.0,  fip:3.10, kp:"~30.8%", bp:"~9.2%",  slg:"~.255" },
+      { yr:2021, lvl:"A+",  org:"Rancho Cuca.",  age:21, ip:22.1,  fip:2.95, kp:"~31.5%", bp:"~8.8%",  slg:"~.245" },
+      { yr:2022, lvl:"AA",  org:"Tulsa",         age:22, ip:68.1,  fip:2.75, kp:"~32.4%", bp:"~7.5%",  slg:"~.228" },
+      { yr:2022, lvl:"AAA", org:"OKC",           age:22, ip:32.0,  fip:2.90, kp:"~30.5%", bp:"~8.0%",  slg:"~.242" },
+      { yr:2023, lvl:"AAA", org:"OKC",           age:23, ip:26.0,  fip:2.45, kp:"~34.8%", bp:"~6.8%",  slg:"~.218" }
+    ]
+  },
+  {
+    name: "Eury Pérez",
+    debut: 2023,
+    team: "Miami Marlins",
+    hand: "RHP",
+    dob: "2003-04-15",
+    bestWAR: 2.1,
+    bestYear: 2023,
+    mlb: [
+      { yr:2023, war:2.1, era:3.15, fip:3.40, ip:91.1, note:"Youngest Marlins pitcher ever" }
+    ],
+    minors: [
+      { yr:2021, lvl:"Rk",  org:"FCL Marlins",  age:18, ip:29.2,  fip:2.30, kp:"~36.0%", bp:"~6.5%",  slg:"~.185" },
+      { yr:2022, lvl:"A+",  org:"Beloit",       age:19, ip:72.0,  fip:2.65, kp:"~35.8%", bp:"~7.2%",  slg:"~.210" },
+      { yr:2023, lvl:"AA",  org:"Pensacola",    age:20, ip:36.2,  fip:2.32, kp:"~34.5%", bp:"~6.8%",  slg:"~.195" }
+    ]
+  },
+  {
+    name: "Bryce Miller",
+    debut: 2023,
+    team: "Seattle Mariners",
+    hand: "RHP",
+    dob: "1999-08-23",
+    bestWAR: 2.0,
+    bestYear: 2023,
+    mlb: [
+      { yr:2023, war:2.0, era:3.92, fip:3.60, ip:122.2, note:"Solid FIP vs ERA" }
+    ],
+    minors: [
+      { yr:2021, lvl:"A+",  org:"Modesto",      age:21, ip:40.0,  fip:2.85, kp:"~29.5%", bp:"~5.8%",  slg:"~.238" },
+      { yr:2022, lvl:"AA",  org:"Arkansas",     age:22, ip:88.2,  fip:2.60, kp:"~30.8%", bp:"~5.1%",  slg:"~.222" },
+      { yr:2023, lvl:"AAA", org:"Tacoma",       age:23, ip:28.0,  fip:2.75, kp:"~31.0%", bp:"~5.4%",  slg:"~.228" }
+    ]
+  },
+  {
+    name: "Logan Allen",
+    debut: 2023,
+    team: "Cleveland Guardians",
+    hand: "LHP",
+    dob: "2001-05-02",
+    bestWAR: 2.2,
+    bestYear: 2023,
+    mlb: [
+      { yr:2023, war:2.2, era:3.81, fip:3.55, ip:133.0, note:"Guardians rotation anchor" }
+    ],
+    minors: [
+      { yr:2020, lvl:"Rk",  org:"FCL Guardians",age:19, ip:8.0,   fip:2.40, kp:"~34.0%", bp:"~7.0%",  slg:"~.195" },
+      { yr:2021, lvl:"A",   org:"Lake County",  age:20, ip:68.0,  fip:2.95, kp:"~31.5%", bp:"~8.2%",  slg:"~.248" },
+      { yr:2022, lvl:"A+",  org:"Lake County",  age:21, ip:50.0,  fip:2.80, kp:"~33.0%", bp:"~7.5%",  slg:"~.235" },
+      { yr:2022, lvl:"AA",  org:"Akron",        age:21, ip:55.1,  fip:2.65, kp:"~32.5%", bp:"~7.0%",  slg:"~.225" },
+      { yr:2023, lvl:"AAA", org:"Columbus",     age:22, ip:34.0,  fip:2.90, kp:"~30.8%", bp:"~7.8%",  slg:"~.240" }
+    ]
+  },
+
+  // ════════════════════════════════════════
+  // 2024 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Paul Skenes",
+    debut: 2024,
+    team: "Pittsburgh Pirates",
+    hand: "RHP",
+    dob: "2002-05-29",
+    bestWAR: 7.0,
+    bestYear: 2025,
+    mlb: [
+      { yr:2024, war:4.2, era:1.97, fip:2.15, ip:133.0, note:"⭐ NL ROY, historic 1.97 ERA" },
+      { yr:2025, war:7.0, era:1.85, fip:1.95, ip:192.0, note:"⭐ NL Cy Young" }
+    ],
+    minors: [
+      { yr:2023, lvl:"A",   org:"Bradenton",    age:21, ip:6.1,   fip:1.20, kp:"~50.0%", bp:"~5.0%",  slg:"~.120" },
+      { yr:2023, lvl:"AA",  org:"Altoona",      age:21, ip:10.0,  fip:1.65, kp:"~43.5%", bp:"~5.4%",  slg:"~.145" },
+      { yr:2024, lvl:"AAA", org:"Indianapolis", age:21, ip:27.1,  fip:0.99, kp:"~44.2%", bp:"~4.1%",  slg:"~.148" }
+    ]
+  },
+  {
+    name: "Jared Jones",
+    debut: 2024,
+    team: "Pittsburgh Pirates",
+    hand: "RHP",
+    dob: "2001-08-06",
+    bestWAR: 2.1,
+    bestYear: 2024,
+    mlb: [
+      { yr:2024, war:2.1, era:3.73, fip:3.58, ip:128.1, note:"High K debut" }
+    ],
+    minors: [
+      { yr:2019, lvl:"Rk",  org:"FCL Pirates",   age:17, ip:16.0,  fip:3.30, kp:"~28.5%", bp:"~10.2%", slg:"~.255" },
+      { yr:2021, lvl:"A",   org:"Bradenton",     age:19, ip:47.0,  fip:2.95, kp:"~32.4%", bp:"~9.8%",  slg:"~.240" },
+      { yr:2022, lvl:"A+",  org:"Greensboro",    age:20, ip:58.2,  fip:2.75, kp:"~35.2%", bp:"~8.6%",  slg:"~.225" },
+      { yr:2022, lvl:"AA",  org:"Altoona",       age:20, ip:30.1,  fip:2.85, kp:"~33.5%", bp:"~9.2%",  slg:"~.232" },
+      { yr:2023, lvl:"AA",  org:"Altoona",       age:21, ip:94.0,  fip:2.90, kp:"~32.8%", bp:"~9.1%",  slg:"~.238" },
+      { yr:2024, lvl:"AAA", org:"Indianapolis",  age:22, ip:25.0,  fip:3.10, kp:"~30.5%", bp:"~9.4%",  slg:"~.252" }
+    ]
+  },
+  {
+    name: "Jackson Merrill",
+    debut: 2024,
+    team: "San Diego Padres",
+    hand: null,
+    _skip: true // position player
+  },
+
+  // ════════════════════════════════════════
+  // 2025 DEBUTS
+  // ════════════════════════════════════════
+  {
+    name: "Roki Sasaki",
+    debut: 2025,
+    team: "Los Angeles Dodgers",
+    hand: "RHP",
+    dob: "2001-11-03",
+    bestWAR: 2.5,
+    bestYear: 2025,
+    mlb: [
+      { yr:2025, war:2.5, era:3.18, fip:3.10, ip:125.0, note:"NPB star MLB debut" }
+    ],
+    minors: [],
+    noMinorNote: "Came from NPB (Chiba Lotte Marines) — no affiliated MiLB career"
+  },
+  {
+    name: "Hagen Smith",
+    debut: 2025,
+    team: "Atlanta Braves",
+    hand: "LHP",
+    dob: "2003-07-28",
+    bestWAR: 2.0,
+    bestYear: 2025,
+    mlb: [
+      { yr:2025, war:2.0, era:3.45, fip:3.20, ip:108.0, note:"Debut season" }
+    ],
+    minors: [
+      { yr:2023, lvl:"Rk",  org:"FCL Braves",   age:19, ip:21.0,  fip:2.40, kp:"~37.5%", bp:"~7.2%",  slg:"~.195" },
+      { yr:2024, lvl:"A+",  org:"Rome",         age:20, ip:58.0,  fip:2.65, kp:"~34.8%", bp:"~6.5%",  slg:"~.210" },
+      { yr:2024, lvl:"AA",  org:"Mississippi",  age:20, ip:42.0,  fip:2.80, kp:"33.2%", bp:"~7.1%",  slg:"~.225" },
+      { yr:2025, lvl:"AAA", org:"Gwinnett",     age:21, ip:18.0,  fip:2.55, kp:"~35.0%", bp:"~6.8%",  slg:"~.205" }
+    ]
+  }
+];
+
+// ── Average age by level (MLB-wide historical norms for starting pitchers) ──
+// Source: FanGraphs/Baseball Reference population averages across affiliated MiLB
+const AVG_AGE = {
+  'Rk':  19.5,
+  'A-':  21.0,
+  'A':   22.0,
+  'A+':  22.5,
+  'AA':  23.5,
+  'AAA': 25.0,
+  'Alt': 23.0,  // COVID alt sites — mixed ages, use rough average
+};
+
+function ageVsAvg(lvl, age) {
+  const avg = AVG_AGE[lvl];
+  if (avg === undefined) return null;
+  const delta = age - avg;
+  return { delta, avg };
+}
+
+function ageTag(lvl, age) {
+  const r = ageVsAvg(lvl, age);
+  if (!r) return '';
+  const { delta, avg } = r;
+  const sign = delta < 0 ? '−' : delta > 0 ? '+' : '±';
+  const abs = Math.abs(delta).toFixed(1).replace(/\.0$/, '');
+  const label = delta === 0 ? `±0 vs avg ${avg}` : `${sign}${abs} vs avg ${avg}`;
+
+  let color, title;
+  if (delta <= -1.5) {
+    color = '#3dba7a'; title = 'Significantly younger than avg for this level';
+  } else if (delta < 0) {
+    color = '#6fcf97'; title = 'Younger than avg for this level';
+  } else if (delta === 0) {
+    color = 'var(--chalk3)'; title = 'At avg age for this level';
+  } else if (delta <= 1.5) {
+    color = 'var(--chalk3)'; title = 'Slightly older than avg for this level';
+  } else {
+    color = '#e07060'; title = 'Older than avg for this level';
+  }
+
+  return `<span title="${title}" style="font-family:'DM Mono',monospace;font-size:9px;color:${color};margin-left:4px;opacity:0.9">${label}</span>`;
+}
+
+// ── Helpers ──
+function colorFIP(v) {
+  if (v<2.50) return 'v-elite'; if (v<3.20) return 'v-great'; if (v>4.20) return 'v-poor'; return 'v-good';
+}
+function colorK(s) {
+  if (!s || s==='—' || s.startsWith('~')) return '';
+  const v=parseFloat(s); if (v>33) return 'v-elite'; if (v>27) return 'v-great'; if (v<21) return 'v-poor'; return 'v-good';
+}
+function colorBB(s) {
+  if (!s || s==='—' || s.startsWith('~')) return '';
+  const v=parseFloat(s); if (v<6) return 'v-elite'; if (v<9) return 'v-great'; if (v>11) return 'v-poor'; return 'v-good';
+}
+function colorSLG(s) {
+  if (!s || s==='—' || s.startsWith('~')) return '';
+  const v=parseFloat(s); if (v<.220) return 'v-elite'; if (v<.270) return 'v-great'; if (v>.330) return 'v-poor'; return 'v-good';
+}
+function fmtStat(s) {
+  if (!s || s==='—') return '<span style="color:var(--chalk3);font-size:10px">—</span>';
+  if (s.startsWith('~')) return `<span style="color:var(--chalk3)" title="Estimated">${s}</span>`;
+  return s;
+}
+function lvlClass(l) {
+  if (l==='Rk') return 'lvl-Rk';
+  if (l==='A') return 'lvl-A';
+  if (l==='A+') return 'lvl-Ap';
+  if (l==='AA') return 'lvl-AA';
+  if (l==='AAA') return 'lvl-AAA';
+  return 'lvl-Alt';
+}
+
+function buildCard(p) {
+  const mlbRows = p.mlb.map(s => {
+    const star = s.note.startsWith('⭐') ? `<span class="qual-star">⭐ WAR ${s.war}</span>` : `<span style="color:var(--chalk3);font-family:'DM Mono',monospace;font-size:10px">WAR ${s.war}</span>`;
+    const cleanNote = s.note.replace('⭐ ','');
+    return `<div class="season-row">
+      <span class="season-yr">${s.yr}</span>
+      <div class="season-stats">
+        <span class="sstat"><span class="sk">ERA </span><span class="sv">${s.era}</span></span>
+        <span class="sstat"><span class="sk">FIP </span><span class="sv">${s.fip}</span></span>
+        <span class="sstat"><span class="sk">IP </span><span class="sv">${s.ip}</span></span>
+        ${star}
+      </div>
+      <span class="season-note" title="${cleanNote}">${cleanNote}</span>
+    </div>`;
+  }).join('');
+
+  let minorContent;
+  if (p.noMinorNote) {
+    minorContent = `<div class="no-minors">${p.noMinorNote}</div>`;
+  } else if (!p.minors || p.minors.length===0) {
+    minorContent = `<div class="no-minors">No affiliated MiLB data available</div>`;
+  } else {
+    // Group stints by year
+    const byYear = {};
+    p.minors.forEach(m => {
+      if (!byYear[m.yr]) byYear[m.yr] = [];
+      byYear[m.yr].push(m);
+    });
+
+    // Max IP in any single stint for bar scaling
+    const maxIP = Math.max(...p.minors.map(m => parseFloat(m.ip)));
+
+    let rows = '';
+    Object.keys(byYear).sort().forEach(yr => {
+      const stints = byYear[yr];
+      const totalIP = stints.reduce((s,m) => s + parseFloat(m.ip), 0);
+      const totalIPStr = totalIP % 1 === 0 ? totalIP.toFixed(0) : totalIP.toFixed(1);
+      const multiLevel = stints.length > 1;
+
+      // Year header row (only if multi-level or always for clarity)
+      rows += `<tr class="yr-group-row">
+        <td colspan="2">${yr} <span style="color:var(--chalk3);font-weight:400;font-size:9.5px">— Age ${stints[0].age}</span></td>
+        <td colspan="6"><span class="yr-total">${multiLevel ? `<strong>${stints.length}</strong> levels · ` : ''}<strong>${totalIPStr}</strong> total IP</span></td>
+      </tr>`;
+
+      stints.forEach(m => {
+        const barWidth = Math.round((parseFloat(m.ip) / maxIP) * 38);
+        rows += `<tr class="stint-row">
+          <td><span class="lvl-tag ${lvlClass(m.lvl)}">${m.lvl}</span><span style="color:var(--chalk3)">${m.org}</span>${ageTag(m.lvl, m.age)}</td>
+          <td class="ip-bar-cell">
+            ${m.ip}<span class="ip-bar" style="width:${barWidth}px"></span>
+          </td>
+          <td class="${colorFIP(m.fip)}">${m.fip}</td>
+          <td class="${colorK(m.kp)}">${fmtStat(m.kp)}</td>
+          <td class="${colorBB(m.bp)}">${fmtStat(m.bp)}</td>
+          <td class="${colorSLG(m.slg)}">${fmtStat(m.slg)}</td>
+        </tr>`;
+      });
+    });
+
+    minorContent = `<table class="minor-table">
+      <thead><tr>
+        <th>Level / Org</th><th>IP</th>
+        <th>FIP</th><th>K%</th><th>BB%</th><th>SLG-A</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  return `<div class="card" data-debut="${p.debut}" data-war="${p.bestWAR}" data-name="${p.name.toLowerCase()}" data-hand="${p.hand||''}">
+    <div class="card-head">
+      <div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-meta">
+          <span class="hand-badge">${p.hand||'—'}</span>
+          <span>${p.team}</span>
+          <span>·</span>
+          <span>Debut <strong>${p.debut}</strong></span>
+        </div>
+      </div>
+      <div class="war-badge">
+        <span class="war-num">${p.bestWAR}</span>
+        <span class="war-sub">best fWAR (${p.bestYear})</span>
+      </div>
+    </div>
+    <div class="mlb-section">
+      <div class="section-label">MLB Seasons ≥ 2.0 WAR</div>
+      ${mlbRows}
+    </div>
+    <div class="minor-section">
+      <div class="section-label" style="color:var(--green)">Minor League Stats by Level &amp; Age</div>
+      ${minorContent}
+    </div>
+  </div>`;
+}
+
+let sortMode = 'war';
+
+function render() {
+  const activeYear = document.querySelector('.pill-btn.active')?.dataset.year || 'all';
+  const minWAR = parseFloat(document.getElementById('warFilter').value);
+  const handVal = document.getElementById('handFilter').value;
+  const search = document.getElementById('searchBox').value.toLowerCase().trim();
+
+  let filtered = PITCHERS.filter(p => {
+    if (p._skip || !p.hand) return false;
+    if (activeYear !== 'all' && p.debut !== parseInt(activeYear)) return false;
+    if (p.bestWAR < minWAR) return false;
+    if (handVal !== 'all' && p.hand !== handVal) return false;
+    if (search && !p.name.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  if (sortMode === 'war') filtered.sort((a,b) => b.bestWAR - a.bestWAR);
+  else if (sortMode === 'debut') filtered.sort((a,b) => a.debut - b.debut || b.bestWAR - a.bestWAR);
+  else if (sortMode === 'name') filtered.sort((a,b) => a.name.localeCompare(b.name));
+
+  const grid = document.getElementById('pitcherGrid');
+  grid.innerHTML = filtered.length === 0
+    ? '<div class="no-results">No pitchers match these filters.</div>'
+    : filtered.map(buildCard).join('');
+
+  document.getElementById('countSpan').textContent = filtered.length;
+
+  // Update header stats
+  const allValid = PITCHERS.filter(p=>!p._skip && p.hand);
+  document.getElementById('totalPitchers').textContent = allValid.length;
+  document.getElementById('totalSeasons').textContent = allValid.reduce((s,p)=>(p.mlb||[]).filter(m=>m.war>=2.0).length+s,0);
+  document.getElementById('topWAR').textContent = Math.max(...allValid.map(p=>p.bestWAR)).toFixed(1);
+}
+
+// Event listeners
+document.querySelectorAll('.pill-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.pill-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+document.getElementById('warFilter').addEventListener('change', render);
+document.getElementById('handFilter').addEventListener('change', render);
+document.getElementById('searchBox').addEventListener('input', render);
+
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    sortMode = btn.dataset.sort;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
